@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Properties | LandlordPro{% endblock %}
+{% block content %}
+<div class="section-title"><h1>Properties & Units</h1></div>
+<div class="grid grid-2">
+  <div class="card"><h2>Add Property</h2><form class="form" method="post" action="{{ url_for('landlord.add_property') }}"><label>Property Name<input name="property_name" required placeholder="Apartment A"></label><label>Location<input name="location" placeholder="Nairobi"></label><button class="btn btn-primary">Add Property</button></form></div>
+  <div class="card"><h2>Quick Summary</h2><p class="text-muted">Add properties, then attach units with rent amount and unit status. Status can be occupied, vacant or under repair.</p></div>
+</div>
+{% for property in properties %}
+<div class="card" style="margin-top:18px">
+  <div class="section-title"><div><h2>{{ property.property_name }}</h2><p class="text-muted">{{ property.location }} · {{ property.total_units }} units · {{ property.occupied_units }} occupied · {{ property.vacant_units }} vacant</p></div><form method="post" action="{{ url_for('landlord.delete_property', property_id=property.id) }}" onsubmit="return confirm('Delete this property and all its units?')"><button class="btn btn-danger btn-sm">Delete</button></form></div>
+  <form class="form" method="post" action="{{ url_for('landlord.add_unit', property_id=property.id) }}">
+    <div class="form-row"><label>Unit Number<input name="unit_number" placeholder="A1" required></label><label>Rent Amount<input name="rent_amount" type="number" min="1" step="0.01" required></label></div>
+    <div class="form-row"><label>Due Day<input name="due_day" type="number" min="1" max="28" value="5"></label><label>Late Fee %<input name="late_fee_percent" type="number" min="0" max="100" step="0.01" value="5"></label></div><div class="form-row"><label>Status<select name="status"><option value="vacant">Vacant</option><option value="occupied">Occupied</option><option value="repair">Under Repair</option></select></label></div>
+    <button class="btn btn-outline">Add Unit</button>
+  </form>
+  <div class="table-wrap" style="margin-top:14px"><table><tr><th>Unit</th><th>Tenant</th><th>Rent</th><th>Due Day</th><th>Late Fee</th><th>Status</th><th>Action</th></tr>{% for u in property.units %}<tr><td>{{ u.unit_number }}</td><td>{{ u.tenant_name }}</td><td>KSh {{ '{:,.0f}'.format(u.rent_amount) }}</td><td>{{ u.due_day }}</td><td>{{ u.late_fee_percent }}%</td><td><span class="badge {{ u.status }}">{{ 'Under Repair' if u.status=='repair' else u.status.title() }}</span></td><td><form class="actions" method="post" action="{{ url_for('landlord.update_unit_status', unit_id=u.id) }}"><select name="status"><option value="occupied">Occupied</option><option value="vacant">Vacant</option><option value="repair">Repair</option></select><button class="btn btn-sm">Update</button></form></td></tr>{% else %}<tr><td colspan="7">No units yet.</td></tr>{% endfor %}</table></div>
+</div>
+{% else %}<div class="card" style="margin-top:18px">No properties yet.</div>{% endfor %}
+{% endblock %}

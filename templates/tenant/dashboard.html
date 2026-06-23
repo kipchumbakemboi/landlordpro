@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Tenant Dashboard | LandlordPro{% endblock %}
+{% block content %}
+<div class="section-title"><div><h1>Tenant Dashboard</h1><p class="text-muted">Welcome, {{ current_user.fullname }}.</p></div>{% if whatsapp %}<a class="btn btn-success" target="_blank" href="{{ whatsapp }}">Contact Landlord via WhatsApp</a>{% endif %}</div>
+{% if not tenant or not tenant.unit %}
+<div class="card"><h2>No unit assigned yet</h2><p class="text-muted">Your registration is saved. Please wait for landlord approval and unit assignment.</p></div>
+{% else %}
+<div class="grid grid-4"><div class="stat"><div class="value">{{ tenant.unit.unit_number }}</div><div class="label">Unit</div></div><div class="stat"><div class="value">KSh {{ '{:,.0f}'.format(monthly_rent) }}</div><div class="label">Monthly Rent</div></div><div class="stat"><div class="value">KSh {{ '{:,.0f}'.format(paid_this_month) }}</div><div class="label">Paid This Month</div></div><div class="stat"><div class="value">KSh {{ '{:,.0f}'.format(balance) }}</div><div class="label">Current Balance</div></div></div><p class="text-muted">Late fee included this month: KSh {{ '{:,.0f}'.format(late_fee or 0) }}</p>
+<div class="grid grid-2" style="margin-top:18px"><div class="card"><h2>Property Details</h2><p><b>Property:</b> {{ tenant.unit.property.property_name }}</p><p><b>Location:</b> {{ tenant.unit.property.location }}</p><p><b>Landlord:</b> {{ landlord.fullname }}</p><p><b>Lease:</b> {{ tenant.lease_start or '-' }} to {{ tenant.lease_end or '-' }}</p><div class="actions"><a class="btn btn-primary" href="{{ url_for('payments.tenant_payments') }}">Pay Rent</a><a class="btn btn-outline" href="{{ url_for('payments.generate_invoice', tenant_id=tenant.id) }}">Download Invoice</a></div></div><div class="card"><h2>Recent Repairs</h2><div class="table-wrap"><table><tr><th>Issue</th><th>Status</th></tr>{% for r in repairs %}<tr><td>{{ r.title }}</td><td><span class="badge {{ r.status }}">{{ r.status.replace('_',' ').title() }}</span></td></tr>{% else %}<tr><td colspan="2">No repairs submitted.</td></tr>{% endfor %}</table></div><br><a class="btn btn-outline" href="{{ url_for('repairs.tenant_repairs') }}">Submit Repair</a></div></div>
+<div class="card" style="margin-top:18px"><h2>Notifications</h2>{% for n in notifications %}<p><b>{{ n.title }}</b><br><span class="text-muted">{{ n.body }}</span></p>{% else %}<p class="text-muted">No notifications.</p>{% endfor %}</div>
+{% endif %}
+{% endblock %}

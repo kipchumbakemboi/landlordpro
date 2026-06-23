@@ -1,0 +1,2 @@
+{% extends 'base.html' %}
+{% block content %}<div class="auth-box card"><h1>Two-Factor Authentication</h1><p class="text-muted">Enter the verification code sent to your email/SMS. In local development, check the server logs.</p><form class="form" method="post"><label>Code<input name="code" required inputmode="numeric"></label><button class="btn btn-primary">Verify</button></form></div>{% endblock %}

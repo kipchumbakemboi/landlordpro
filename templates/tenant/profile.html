@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Profile | LandlordPro{% endblock %}
+{% block content %}
+<div class="auth-box card"><h1>My Profile</h1><form class="form" method="post"><label>Full Name<input name="fullname" value="{{ current_user.fullname }}"></label><label>Email<input value="{{ current_user.email }}" disabled></label><label>Phone<input name="phone" value="{{ current_user.phone or '' }}"></label><div class="form-row"><label>ID Number<input name="id_number" value="{{ tenant.id_number or '' if tenant else '' }}"></label><label>Occupation<input name="occupation" value="{{ tenant.occupation or '' if tenant else '' }}"></label></div><label>Emergency Contact<input name="emergency_contact" value="{{ tenant.emergency_contact or '' if tenant else '' }}"></label><label><input type="checkbox" name="two_factor_enabled" {% if current_user.two_factor_enabled %}checked{% endif %}> Enable two-factor authentication</label><button class="btn btn-primary">Save Profile</button></form></div>
+{% endblock %}

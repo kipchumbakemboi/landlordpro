@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+database/landlordpro.db
+uploads/repairs/*
+!uploads/repairs/.gitkeep
+instance/
+.pytest_cache/
+.mypy_cache/
+.coverage
+dist/
+build/
+*.log

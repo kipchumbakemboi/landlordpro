@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}Payments | LandlordPro{% endblock %}
+{% block content %}
+<div class="section-title"><h1>Rent & M-Pesa Payments</h1><a class="btn btn-outline" href="{{ url_for('reports.export_excel', report_type='revenue') }}">Export Revenue Excel</a></div>
+<div class="card"><h2>Record / Simulate M-Pesa Payment</h2><form class="form" method="post" action="{{ url_for('payments.record_payment') }}"><div class="form-row"><label>Tenant<select name="tenant_id" required>{% for t in tenants %}<option value="{{ t.id }}">{{ t.full_name }} - {{ t.unit.unit_number }}</option>{% endfor %}</select></label><label>Amount<input name="amount" type="number" min="1" step="0.01" required></label></div><label>Receipt (optional)<input name="receipt" placeholder="Auto generated if empty"></label><button class="btn btn-primary">Record Payment</button></form></div>
+<div class="card" style="margin-top:18px"><h2>Payment History</h2><div class="table-wrap"><table><tr><th>Date</th><th>Tenant</th><th>Unit</th><th>Amount</th><th>Receipt</th><th>Status</th></tr>{% for p in payments %}<tr><td>{{ p.payment_date.strftime('%Y-%m-%d %H:%M') }}</td><td>{{ p.tenant.full_name }}</td><td>{{ p.unit.unit_number }}</td><td>{{ p.formatted_amount }}</td><td>{{ p.mpesa_receipt }}</td><td><span class="badge {{ p.status }}">{{ p.status.title() }}</span></td></tr>{% else %}<tr><td colspan="6">No payments yet.</td></tr>{% endfor %}</table></div></div>
+{% endblock %}

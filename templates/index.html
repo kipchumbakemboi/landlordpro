@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}LandlordPro | Smart Property Management{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="badge">Smart Property Management System</p>
+    <h1>Manage rentals, rent, repairs, invoices, M-Pesa and tenant communication in one place.</h1>
+    <p class="text-muted">LandlordPro helps landlords track occupied and vacant units, collect rent, approve tenants, generate reports and chat with tenants. Tenants can pay rent, download invoices and submit maintenance requests.</p>
+    <div class="actions" style="margin-top:20px">
+      <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Create Account</a>
+      <a class="btn btn-outline" href="{{ url_for('auth.login') }}">Login</a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <h2>Demo Accounts</h2>
+    <div class="card" style="box-shadow:none">
+      <b>Landlord</b><br>landlord@landlordpro.com<br><span class="text-muted">password123</span>
+    </div><br>
+    <div class="card" style="box-shadow:none">
+      <b>Tenant</b><br>tenant@landlordpro.com<br><span class="text-muted">password123</span>
+    </div>
+  </div>
+</section>
+<section class="grid grid-4">
+  <div class="stat"><div class="value">🏢</div><div class="label">Properties and Units</div></div>
+  <div class="stat"><div class="value">📱</div><div class="label">M-Pesa Simulation</div></div>
+  <div class="stat"><div class="value">🧾</div><div class="label">PDF Invoices</div></div>
+  <div class="stat"><div class="value">🤖</div><div class="label">AI Assistant</div></div>
+</section>
+{% endblock %}

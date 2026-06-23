@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Landlord Dashboard | LandlordPro{% endblock %}
+{% block content %}
+<div class="section-title"><div><h1>Landlord Dashboard</h1><p class="text-muted">Welcome, {{ current_user.fullname }}. Here is your property performance.</p></div><div class="actions"><a class="btn btn-primary" href="{{ url_for('landlord.properties') }}">Add Property / Unit</a><form method="post" action="{{ url_for('landlord.send_rent_reminders') }}"><button class="btn btn-warning">Send Rent Reminders</button></form><form method="post" action="{{ url_for('landlord.generate_monthly_invoices') }}"><button class="btn btn-outline">Generate Monthly Invoices</button></form></div></div>
+<div class="grid grid-4">
+  <div class="stat"><div class="value">{{ total_units }}</div><div class="label">Total Units</div></div>
+  <div class="stat"><div class="value">{{ occupied_units }}</div><div class="label">Occupied Units</div></div>
+  <div class="stat"><div class="value">{{ vacant_units }}</div><div class="label">Vacant Units</div></div>
+  <div class="stat"><div class="value">KSh {{ '{:,.0f}'.format(expected_revenue) }}</div><div class="label">Expected Revenue</div></div>
+</div>
+<div class="grid grid-3" style="margin-top:18px">
+  <div class="card"><h3>Occupancy Rate</h3><div class="progress"><span style="width:{{ occupancy_rate }}%"></span></div><p><b>{{ occupancy_rate }}%</b> occupied</p></div>
+  <div class="card"><h3>Collected This Month</h3><p style="font-size:1.7rem;font-weight:900">KSh {{ '{:,.0f}'.format(collected_this_month) }}</p></div>
+  <div class="card"><h3>Outstanding Estimate</h3><p style="font-size:1.7rem;font-weight:900">KSh {{ '{:,.0f}'.format(outstanding) }}</p></div>
+</div>
+<div class="grid grid-2" style="margin-top:18px">
+  <div class="card"><div class="section-title"><h2>Recent Payments</h2><a href="{{ url_for('payments.landlord_payments') }}">View all</a></div><div class="table-wrap"><table><tr><th>Tenant</th><th>Unit</th><th>Amount</th><th>Date</th></tr>{% for p in recent_payments %}<tr><td>{{ p.tenant.full_name }}</td><td>{{ p.unit.unit_number }}</td><td>{{ p.formatted_amount }}</td><td>{{ p.payment_date.strftime('%Y-%m-%d') }}</td></tr>{% else %}<tr><td colspan="4">No payments yet.</td></tr>{% endfor %}</table></div></div>
+  <div class="card"><div class="section-title"><h2>Repair Requests</h2><a href="{{ url_for('repairs.landlord_repairs') }}">Manage</a></div><div class="table-wrap"><table><tr><th>Unit</th><th>Issue</th><th>Status</th></tr>{% for r in recent_repairs %}<tr><td>{{ r.unit_number }}</td><td>{{ r.title }}</td><td><span class="badge {{ r.status }}">{{ r.status.replace('_',' ').title() }}</span></td></tr>{% else %}<tr><td colspan="3">No repairs.</td></tr>{% endfor %}</table></div></div>
+</div>
+{% endblock %}

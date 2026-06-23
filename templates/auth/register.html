@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Register | LandlordPro{% endblock %}
+{% block content %}
+<div class="auth-box card">
+  <h1>Create account</h1>
+  <form class="form" method="post">
+    <div class="form-row"><label>Full Name<input name="fullname" required></label><label>Email<input name="email" type="email" required></label></div>
+    <div class="form-row"><label>Phone<input name="phone" placeholder="+2547..."></label><label>Role<select name="role"><option value="tenant">Tenant</option><option value="landlord">Landlord</option></select></label></div>
+    <div class="form-row"><label>ID Number<input name="id_number"></label><label>Occupation<input name="occupation"></label></div>
+    <label>Emergency Contact<input name="emergency_contact"></label>
+    <label>Password<input name="password" type="password" required></label>
+    <button class="btn btn-primary" type="submit">Register</button>
+  </form>
+</div>
+{% endblock %}

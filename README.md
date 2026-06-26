@@ -6,22 +6,22 @@ A full Flask web app implemented from the uploaded `LANDLORDPRO.txt` framework. 
 
 ## Completed Modules
 
-- Authentication: register, login, real token-based password reset flow, optional OTP 2FA
-- Property management: add properties, units, status, due day, late-fee percentage
-- Tenant management: approval, assignment, ID number, occupation, emergency contact, lease dates, lease document upload
-- Rent management: monthly rent tracking, paid this month, outstanding balance, automatic late fee calculation
-- M-Pesa: Daraja STK Push implementation with simulation fallback when credentials are missing
-- Maintenance: tenant repair requests, priority, photo upload, landlord status workflow
-- Invoices: PDF rent invoices and repair invoices
-- WhatsApp: direct contact links
-- AI assistant: OpenAI integration if `OPENAI_API_KEY` is set, rule-based fallback otherwise
-- Reports: occupancy, revenue and repairs reports, filters, PDF export, Excel export
-- Chat: REST chat plus Socket.IO real-time event support
-- Notifications: email/SMS service with console fallback and in-app notifications
-- Security/RBAC: landlord/tenant route protections and reusable decorators
-- API/mobile readiness: JWT REST API under `/api/v1`
-- Production: `.env.example`, Dockerfile, docker-compose, Gunicorn, Nginx example, Procfile
-- Tests: pytest route/API smoke tests
+* Authentication: register, login, real token-based password reset flow, optional OTP 2FA
+* Property management: add properties, units, status, due day, late-fee percentage
+* Tenant management: approval, assignment, ID number, occupation, emergency contact, lease dates, lease document upload
+* Rent management: monthly rent tracking, paid this month, outstanding balance, automatic late fee calculation
+* M-Pesa: Daraja STK Push implementation with simulation fallback when credentials are missing
+* Maintenance: tenant repair requests, priority, photo upload, landlord status workflow
+* Invoices: PDF rent invoices and repair invoices
+* WhatsApp: direct contact links
+* AI assistant: OpenAI integration if `OPENAI\_API\_KEY` is set, rule-based fallback otherwise
+* Reports: occupancy, revenue and repairs reports, filters, PDF export, Excel export
+* Chat: REST chat plus Socket.IO real-time event support
+* Notifications: email/SMS service with console fallback and in-app notifications
+* Security/RBAC: landlord/tenant route protections and reusable decorators
+* API/mobile readiness: JWT REST API under `/api/v1`
+* Production: `.env.example`, Dockerfile, docker-compose, Gunicorn, Nginx example, Procfile
+* Tests: pytest route/API smoke tests
 
 ## Run Locally
 
@@ -33,29 +33,33 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Open: <http://127.0.0.1:5000>
+Open: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
-## Demo Accounts
 
-| Role | Email | Password |
-|---|---|---|
-| Landlord | landlord@landlordpro.com | password123 |
-| Tenant | tenant@landlordpro.com | password123 |
-| Tenant | david@landlordpro.com | password123 |
+
+\## First Account Setup
+
+
+
+After deployment, open the app and use \*\*Create Account\*\* to register the first landlord account.
+
+
+
+Tenants can then register themselves or be added by a landlord.
 
 ## API Example
 
 ```bash
-curl -X POST http://127.0.0.1:5000/api/v1/login \
-  -H 'Content-Type: application/json' \
+curl -X POST http://127.0.0.1:5000/api/v1/login \\
+  -H 'Content-Type: application/json' \\
   -d '{"email":"tenant@landlordpro.com","password":"password123"}'
 ```
 
 Use the returned token:
 
 ```bash
-curl http://127.0.0.1:5000/api/v1/tenant/dashboard \
-  -H "Authorization: Bearer YOUR_TOKEN"
+curl http://127.0.0.1:5000/api/v1/tenant/dashboard \\
+  -H "Authorization: Bearer YOUR\_TOKEN"
 ```
 
 ## Production Setup
@@ -67,14 +71,12 @@ cp .env.example .env
 ```
 
 2. Set secure values for:
-
-- `SECRET_KEY`
-- `JWT_SECRET`
-- `DATABASE_URL`
-- M-Pesa credentials
-- SMTP credentials
-- `OPENAI_API_KEY` if using live AI
-
+* `SECRET\_KEY`
+* `JWT\_SECRET`
+* `DATABASE\_URL`
+* M-Pesa credentials
+* SMTP credentials
+* `OPENAI\_API\_KEY` if using live AI
 3. Use Docker:
 
 ```bash
@@ -130,3 +132,4 @@ landlordpro/
 ├── gunicorn.conf.py
 └── .env.example
 ```
+

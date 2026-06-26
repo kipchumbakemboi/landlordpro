@@ -57,91 +57,6 @@ def create_app():
 
     return app
 
-def seed_demo_data():
-    if User.query.count() > 0:
-        return
-    landlord = User(
-        fullname="Chrispus Tanui",
-        email="landlord@landlordpro.com",
-        phone="+254712345678",
-        password_hash=bcrypt.generate_password_hash("password123").decode("utf-8"),
-        role="landlord",
-    )
-    tenant_user = User(
-        fullname="Obadiah Kipchumba",
-        email="tenant@landlordpro.com",
-        phone="+2547123456789",
-        password_hash=bcrypt.generate_password_hash("password123").decode("utf-8"),
-        role="tenant",
-    )
-    tenant2_user = User(
-        fullname="Kelvin Sirma",
-        email="kelvin@landlordpro.com",
-        phone="+2547023456789",
-        password_hash=bcrypt.generate_password_hash("password123").decode("utf-8"),
-        role="tenant",
-    )
-    db.session.add_all([landlord, tenant_user, tenant2_user])
-    db.session.commit()
-
-    prop1 = Property(landlord_id=landlord.id, property_name="Sunrise Apartments", location="Kilimani, Nairobi")
-    prop2 = Property(landlord_id=landlord.id, property_name="Green View Court", location="Westlands, Nairobi")
-    db.session.add_all([prop1, prop2])
-    db.session.commit()
-
-    units = [
-        Unit(property_id=prop1.id, unit_number="A1", rent_amount=25000, due_day=5, status="occupied"),
-        Unit(property_id=prop1.id, unit_number="A2", rent_amount=22000, due_day=5, status="vacant"),
-        Unit(property_id=prop1.id, unit_number="A3", rent_amount=28000, due_day=5, status="repair"),
-        Unit(property_id=prop2.id, unit_number="B1", rent_amount=35000, due_day=3, status="occupied"),
-    ]
-    db.session.add_all(units)
-    db.session.commit()
-
-    tenant1 = Tenant(
-        user_id=tenant_user.id,
-        unit_id=units[0].id,
-        id_number="12345678",
-        occupation="Teacher",
-        emergency_contact="+254700111222",
-        lease_start=datetime.utcnow().date() - timedelta(days=180),
-        lease_end=datetime.utcnow().date() + timedelta(days=185),
-        approved=True,
-    )
-    tenant2 = Tenant(
-        user_id=tenant2_user.id,
-        unit_id=units[3].id,
-        id_number="87654321",
-        occupation="Software Developer",
-        emergency_contact="+254733444555",
-        lease_start=datetime.utcnow().date() - timedelta(days=40),
-        lease_end=datetime.utcnow().date() + timedelta(days=325),
-        approved=True,
-    )
-    db.session.add_all([tenant1, tenant2])
-    db.session.commit()
-
-    payments = [
-        Payment(tenant_id=tenant1.id, unit_id=units[0].id, amount=25000, mpesa_receipt="LP06010001", payment_date=datetime.utcnow() - timedelta(days=22), status="completed"),
-        Payment(tenant_id=tenant1.id, unit_id=units[0].id, amount=25000, mpesa_receipt="LP05010002", payment_date=datetime.utcnow() - timedelta(days=53), status="completed"),
-        Payment(tenant_id=tenant2.id, unit_id=units[3].id, amount=20000, mpesa_receipt="LP06010003", payment_date=datetime.utcnow() - timedelta(days=9), status="completed"),
-    ]
-    repairs = [
-        Repair(tenant_id=tenant1.id, title="Leaking Kitchen Tap", description="The kitchen tap has been dripping for three days.", priority="medium", status="pending"),
-        Repair(tenant_id=tenant2.id, title="Electrical Fault", description="Socket near the TV sparks when switched on.", priority="urgent", status="approved"),
-        Repair(tenant_id=tenant1.id, title="Broken Window Lock", description="Bedroom window lock needs replacement.", priority="high", status="completed"),
-    ]
-    messages = [
-        Message(sender_id=landlord.id, receiver_id=tenant_user.id, content="Hello Mary, rent is due on the 5th. Kindly confirm once paid."),
-        Message(sender_id=tenant_user.id, receiver_id=landlord.id, content="Thanks John. I will pay today."),
-    ]
-    notifications = [
-        Notification(user_id=tenant_user.id, title="Welcome to LandlordPro", body="Your tenant dashboard is ready."),
-        Notification(user_id=landlord.id, title="New maintenance request", body="Mary submitted a leaking tap request."),
-    ]
-    db.session.add_all(payments + repairs + messages + notifications)
-    db.session.commit()
-
 
 def ensure_schema_upgrades():
     """Small SQLite-safe schema upgrades for prototype evolution.
@@ -165,7 +80,7 @@ def init_database(app):
     with app.app_context():
         db.create_all()
         ensure_schema_upgrades()
-        seed_demo_data()
+   
 
 app = create_app()
 init_database(app)

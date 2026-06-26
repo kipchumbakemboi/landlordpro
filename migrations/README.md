@@ -10,4 +10,4 @@ flask --app app db migrate -m "initial schema"
 flask --app app db upgrade
 ```
 
-The local SQLite prototype also runs a small safe upgrade helper for new demo columns.
+The local SQLite setup also runs a small safe upgrade helper for newly added columns.

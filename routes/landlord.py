@@ -133,46 +133,92 @@ def tenants():
     vacant_units = Unit.query.join(Property).filter(Property.landlord_id == current_user.id, Unit.status.in_(["vacant", "repair"])).all()
     return render_template("landlord/tenants.html", tenants=assigned_tenants, pending_tenants=pending_tenants, vacant_units=vacant_units)
 
+
 @landlord_bp.route("/tenants/add", methods=["POST"])
 @login_required
 def add_tenant():
     landlord_required()
+
     email = request.form.get("email", "").strip().lower()
     fullname = request.form.get("fullname", "").strip()
     phone = request.form.get("phone", "").strip()
     unit_id = request.form.get("unit_id") or None
+    password = request.form.get("password", "")
+
+    if not fullname or not email or len(password) < 6:
+        flash("Full name, email, and a password of at least 6 characters are required.", "danger")
+        return redirect(url_for("landlord.tenants"))
+
     if User.query.filter_by(email=email).first():
         flash("A user with that email already exists.", "warning")
         return redirect(url_for("landlord.tenants"))
-    user = User(fullname=fullname, email=email, phone=phone, role="tenant", password_hash=bcrypt.generate_password_hash(request.form.get("password") or "password123").decode("utf-8"))
+
+    user = User(
+        fullname=fullname,
+        email=email,
+        phone=phone,
+        role="tenant",
+        password_hash=bcrypt.generate_password_hash(password).decode("utf-8")
+    )
+
     db.session.add(user)
     db.session.commit()
-    tenant = Tenant(user_id=user.id, unit_id=unit_id, id_number=request.form.get("id_number"), occupation=request.form.get("occupation"), emergency_contact=request.form.get("emergency_contact"), lease_start=_date(request.form.get("lease_start")), lease_end=_date(request.form.get("lease_end")), lease_document=_lease_upload(user.id), approved=True)
+
+    tenant = Tenant(
+        user_id=user.id,
+        unit_id=unit_id,
+        id_number=request.form.get("id_number"),
+        occupation=request.form.get("occupation"),
+        emergency_contact=request.form.get("emergency_contact"),
+        lease_start=_date(request.form.get("lease_start")),
+        lease_end=_date(request.form.get("lease_end")),
+        lease_document=_lease_upload(user.id),
+        approved=True
+    )
+
     db.session.add(tenant)
+
     if unit_id:
         unit = db.session.get(Unit, int(unit_id))
         unit.status = "occupied"
+
     db.session.commit()
-    flash("Tenant added. Default password is password123 unless changed in the form.", "success")
+
+    flash("Tenant added successfully.", "success")
     return redirect(url_for("landlord.tenants"))
+
 
 @landlord_bp.route("/tenants/<int:tenant_id>/assign", methods=["POST"])
 @login_required
 def assign_tenant(tenant_id):
     landlord_required()
+
     tenant = db.session.get(Tenant, tenant_id) or abort(404)
-    unit = Unit.query.join(Property).filter(Unit.id == int(request.form.get("unit_id")), Property.landlord_id == current_user.id).first_or_404()
+
+    unit_id = request.form.get("unit_id")
+    if not unit_id:
+        flash("Please select a unit to assign.", "danger")
+        return redirect(url_for("landlord.tenants"))
+
+    unit = Unit.query.join(Property).filter(
+        Unit.id == int(unit_id),
+        Property.landlord_id == current_user.id
+    ).first_or_404()
+
     if tenant.unit:
         tenant.unit.status = "vacant"
+
     tenant.unit_id = unit.id
     tenant.approved = True
     tenant.lease_start = _date(request.form.get("lease_start")) or tenant.lease_start
     tenant.lease_end = _date(request.form.get("lease_end")) or tenant.lease_end
     tenant.lease_document = _lease_upload(tenant.user_id) or tenant.lease_document
+
     unit.status = "occupied"
-    db.session.add(Notification(user_id=tenant.user_id, title="Tenant Approved", body=f"You have been assigned to Unit {unit.unit_number}."))
+
     db.session.commit()
-    flash("Tenant assigned and approved.", "success")
+
+    flash("Tenant assigned and approved successfully.", "success")
     return redirect(url_for("landlord.tenants"))
 
 @landlord_bp.route("/tenants/<int:tenant_id>/approve", methods=["POST"])
@@ -222,3 +268,4 @@ def generate_monthly_invoices():
     db.session.commit()
     flash(f"Generated {count} monthly rent invoice(s).", "success")
     return redirect(url_for("payments.landlord_payments"))
+
